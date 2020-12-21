@@ -55,7 +55,7 @@ defmodule Parser do
     trimmed = String.trim(element)
 
     if String.contains?(element, "Query=") do
-      {:cont, Enum.reverse([trimmed | acc]), []}
+      {:cont, Enum.reverse(acc), [trimmed]}
     else
       {:cont, [trimmed | acc]}
     end
