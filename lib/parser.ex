@@ -34,8 +34,11 @@ defmodule Parser do
     |> File.stream!()
     # Drop the first few lines
     |> Stream.drop_while(&(not String.contains?(&1, "Query=")))
+    # Split the file by queries
     |> split_queries()
+    # Parse each query correctly.
     |> Stream.map(&parse_query/1)
+    # Reverse, so they're placed in the same order as the input file.
     |> Stream.map(&%Query{&1 | targets: Enum.reverse(&1.targets)})
     |> Enum.to_list()
   end

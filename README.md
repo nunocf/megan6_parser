@@ -1,18 +1,18 @@
 # Megan6Parser
 
-**TODO: Add description**
+This is a small parser to read MEGAN6 output files.
+After obtaining a meaningful structure, work is being done to manipulate and generate desired outputs.
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `oli_parser` to your list of dependencies in `mix.exs`:
+```elixir
+mix deps.get
+```
+
+## Running the parser
 
 ```elixir
-def deps do
-  [
-    {:oli_parser, "~> 0.1.0"}
-  ]
-end
+mix run ./tasks/parse.exs <file_to_parse>
 ```
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
