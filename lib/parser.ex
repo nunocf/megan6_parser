@@ -30,7 +30,7 @@ defmodule Parser do
 
   """
 
-  def parse(filepath, criteria) do
+  def parse(filepath, criteria, db_map) do
     filepath
     |> File.stream!()
     # Drop the first few lines
@@ -41,6 +41,7 @@ defmodule Parser do
     |> Stream.map(&parse_query(&1, criteria))
     # Reverse, so they're placed in the same order as the input file.
     |> Stream.map(&%Query{&1 | targets: Enum.reverse(&1.targets)})
+    |> Stream.map(&find_english_name(&1, db_map))
   end
 
   defp split_queries(stream) do
@@ -127,5 +128,15 @@ defmodule Parser do
     |> Enum.at(1)
     |> String.trim_trailing("%")
     |> String.to_integer()
+  end
+
+  def find_english_name(%Query{targets: targets} = q, db_map) do
+    updated_targets =
+      Enum.map(
+        targets,
+        &Map.put(&1, :english_name, Map.get(db_map, &1.id, "Not found"))
+      )
+
+    %{q | targets: updated_targets}
   end
 end

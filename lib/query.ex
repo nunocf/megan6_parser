@@ -6,6 +6,6 @@ defmodule Query do
   end
 
   def headers() do
-    ["Query ID", "Target ID", "Identity", "PASS"]
+    ["Query ID", "Target ID", "English Name", "Identity", "PASS"]
   end
 end
