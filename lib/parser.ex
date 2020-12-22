@@ -29,7 +29,8 @@ defmodule Parser do
       ]
 
   """
-  def parse(filepath) do
+
+  def parse(filepath, criteria) do
     filepath
     |> File.stream!()
     # Drop the first few lines
@@ -37,10 +38,9 @@ defmodule Parser do
     # Split the file by queries
     |> split_queries()
     # Parse each query correctly.
-    |> Stream.map(&parse_query/1)
+    |> Stream.map(&parse_query(&1, criteria))
     # Reverse, so they're placed in the same order as the input file.
     |> Stream.map(&%Query{&1 | targets: Enum.reverse(&1.targets)})
-    |> Enum.to_list()
   end
 
   defp split_queries(stream) do
@@ -64,10 +64,10 @@ defmodule Parser do
   defp fn_after_queries([]), do: {:cont, []}
   defp fn_after_queries(query), do: {:cont, Enum.reverse(query), []}
 
-  defp parse_query(query) do
+  defp parse_query(query, criteria) do
     query
     |> Stream.filter(&(&1 !== ""))
-    |> Enum.reduce(%Query{}, &parse_line/2)
+    |> Enum.reduce(%Query{criteria: criteria}, &parse_line/2)
   end
 
   # This is the first line of the whole query,
@@ -104,9 +104,9 @@ defmodule Parser do
 
     updated =
       Map.put(elem, :identity, %Identity{
-        total: identity_value,
-        positives: positive_value,
-        gaps: gap_value
+        total: parse_percentage(identity_value),
+        positives: parse_percentage(positive_value),
+        gaps: parse_percentage(gap_value)
       })
 
     %Query{acc | targets: [updated | rest]}
@@ -121,4 +121,11 @@ defmodule Parser do
   end
 
   defp parse_line(_, acc), do: acc
+
+  def parse_percentage(percentage_value) do
+    Regex.run(~r/\((.*)\)/, percentage_value)
+    |> Enum.at(1)
+    |> String.trim_trailing("%")
+    |> String.to_integer()
+  end
 end
