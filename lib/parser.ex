@@ -4,23 +4,20 @@ defmodule Parser do
   """
 
   @doc """
-  Parses a file by .
+  Parses a file.
 
   ## Examples
 
-      iex> Parser.parse("./test/small_test_file.txt")
+      iex> Parser.parse("./test/small_test_file.txt", 80, :no_db) |> Enum.to_list()
       [
         %Query{
           id: "M00722:851:000000000-CWMK5:1:2111:21828:16416_1:N:0:AAGAGGCA+CTCTCTAT",
+          criteria: 80,
           targets: [
             %Target{
               frame: -2,
               id: "QBL75482.1",
-              identity: %Identity{
-                gaps: "0/83 (0%)",
-                positives: "83/83 (100%)",
-                total: "83/83 (100%)"
-              },
+              identity: %Identity{gaps: 0, positives: 100, total: 100},
               length: 1964,
               score: %Score{expect: "6e-42", score: "179 bits (455)"}
             }
