@@ -12,7 +12,7 @@ mix deps.get
 ## Running the parser
 
 ```elixir
-mix run ./tasks/parse.exs <input_file::string> <criteria::number> <db_file::string> <output_file::string>
+mix run ./tasks/parse.exs <input_file::string> <criteria::number> <output_file::string> <db_file::string>
 ```
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)

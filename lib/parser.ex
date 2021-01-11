@@ -31,17 +31,23 @@ defmodule Parser do
   """
 
   def parse(filepath, criteria, db_map) do
-    filepath
-    |> File.stream!()
-    # Drop the first few lines
-    |> Stream.drop_while(&(not String.contains?(&1, "Query=")))
-    # Split the file by queries
-    |> split_queries()
-    # Parse each query correctly.
-    |> Stream.map(&parse_query(&1, criteria))
-    # Reverse, so they're placed in the same order as the input file.
-    |> Stream.map(&%Query{&1 | targets: Enum.reverse(&1.targets)})
-    |> Stream.map(&find_english_name(&1, db_map))
+    data =
+      filepath
+      |> File.stream!()
+      # Drop the first few lines
+      |> Stream.drop_while(&(not String.contains?(&1, "Query=")))
+      # Split the file by queries
+      |> split_queries()
+      # Parse each query correctly.
+      |> Stream.map(&parse_query(&1, criteria))
+      # Reverse, so they're placed in the same order as the input file.
+      |> Stream.map(&%Query{&1 | targets: Enum.reverse(&1.targets)})
+
+    if db_map != :no_db do
+      Stream.map(data, &find_english_name(&1, db_map))
+    else
+      data
+    end
   end
 
   defp split_queries(stream) do
